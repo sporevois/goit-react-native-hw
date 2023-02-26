@@ -25,7 +25,8 @@ const RegistrationScreen = () => {
     const { passwordVisibility, variable, handlePasswordVisibility } = useTogglePassVisibility();    
 
     const submit = () => {
-        console.log(state)
+        console.log(state);
+        setState(initialState);
     }
 
 
