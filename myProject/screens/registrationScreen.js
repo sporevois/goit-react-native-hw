@@ -77,7 +77,7 @@ const RegistrationScreen = () => {
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
                 <View style={styles.container}>
-                    <TouchableOpacity style={styles.btn} onPress={submit}>
+                    <TouchableOpacity style={styles.btn} activeOpacity={0.5} onPress={submit}>
                         <Text style={styles.btnTitle}>Зарегистрироваться</Text>
                     </TouchableOpacity>
                     <View style={styles.textContainer}>
@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
         marginTop: 92,
         marginBottom: 33,
         fontSize: 30,
+        fontWeight:'500',
     },
     input: {
         height: 50,
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     
 })
 
-export default RegistrationScreen
+export default RegistrationScreen;
 
 
 
