@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { AntDesign } from '@expo/vector-icons';
 import useTogglePassVisibility from "../hooks/useTogglePassVisibility";
 import {
     StyleSheet,
@@ -34,7 +35,15 @@ const RegistrationScreen = () => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ImageBackground style={styles.image} source={require('../images/PhotoBG.jpg')}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <KeyboardAvoidingView style={styles.form} behavior={Platform.OS == "ios" ? "padding" : "height"}>  
+                    <KeyboardAvoidingView style={styles.form} behavior={Platform.OS == "ios" ? "padding" : "height"}>
+                        <View style={styles.avatarContainer}>
+                            <View style={styles.avatar}>
+                                {/* Avatar upload */}
+                            </View>
+                            <TouchableOpacity style={styles.addAvatarBtn}>
+                                <AntDesign name="pluscircleo" size={25} color="#FF6C00" />
+                            </TouchableOpacity>
+                        </View>
                         <View style={styles.textContainer}>
                             <Text style={styles.title}>Регистрация</Text>
                         </View>                        
@@ -67,14 +76,14 @@ const RegistrationScreen = () => {
                         </View>
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
-                    <View style={styles.container}>
-                        <TouchableOpacity style={styles.btn} onPress={submit}>
-                            <Text style={styles.btnTitle}>Зарегистрироваться</Text>
-                        </TouchableOpacity>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.link}>Уже есть аккаунт? Войти</Text>
-                        </View>
-                    </View>            
+                <View style={styles.container}>
+                    <TouchableOpacity style={styles.btn} onPress={submit}>
+                        <Text style={styles.btnTitle}>Зарегистрироваться</Text>
+                    </TouchableOpacity>
+                    <View style={styles.textContainer}>
+                        <Text style={styles.link}>Уже есть аккаунт? Войти</Text>
+                    </View>
+                </View>            
             </ImageBackground>
         </TouchableWithoutFeedback>
     )    
@@ -97,11 +106,30 @@ const styles = StyleSheet.create({
         paddingBottom:78,
         backgroundColor:'#FFFFFF',
     },
+    avatarContainer: {
+        position: 'absolute',
+        top: -60,
+        width: 120,
+        height: 120,
+        marginBottom: 32,
+        alignSelf: 'center',
+        borderRadius: 16,
+        backgroundColor: "#F6F6F6"
+    },
+    addAvatarBtn: {
+        position: "absolute",
+        right: -12,
+        bottom:14,
+        borderRadius:50,
+        backgroundColor:'#FFFFFF',
+        
+    },
     textContainer: {
         alignItems:"center"
     },
     title: {
-        marginVertical: 33,
+        marginTop: 92,
+        marginBottom: 33,
         fontSize: 30,
     },
     input: {
