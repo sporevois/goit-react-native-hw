@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { AntDesign } from '@expo/vector-icons';
 import useTogglePassVisibility from "../hooks/useTogglePassVisibility";
 import {
@@ -13,16 +13,24 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
 } from 'react-native'
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 
 const initialState = {
         name: '',
         email: '',
         password: ''
 }
+
+SplashScreen.preventAutoHideAsync();
     
 const RegistrationScreen = () => {
     
     const [state, setState] = useState(initialState);
+    const [fontsLoaded] = useFonts({
+        'Roboto-Regular': require("../assets/fonts/Roboto-Regular.ttf"),
+        'Roboto-Medium': require("../assets/fonts/Roboto-Medium.ttf"),
+    });
     const { passwordVisibility, variable, handlePasswordVisibility } = useTogglePassVisibility();    
 
     const submit = () => {
@@ -30,10 +38,19 @@ const RegistrationScreen = () => {
         setState(initialState);
     }
 
+    const onLayoutRootView = useCallback(async () => {
+        if (fontsLoaded) {
+            await SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded]);
+
+    if (!fontsLoaded) {
+        return null;
+    };
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ImageBackground style={styles.image} source={require('../images/PhotoBG.jpg')}>
+        <TouchableWithoutFeedback onLayout={onLayoutRootView} onPress={Keyboard.dismiss}>
+            <ImageBackground style={styles.image} source={require('../assets/images/PhotoBG.jpg')}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <KeyboardAvoidingView style={styles.form} behavior={Platform.OS == "ios" ? "padding" : "height"}>
                         <View style={styles.avatarContainer}>
@@ -70,14 +87,14 @@ const RegistrationScreen = () => {
                                 style={{...styles.input, marginBottom:43}}
                                 onChangeText={(value)=>setState(prev =>({...prev, password:value}))}
                             />
-                            <TouchableOpacity style={styles.toogleBtn} onPress={handlePasswordVisibility}>
+                            <TouchableOpacity style={styles.toogleBtn} disabled={!state.password} onPress={handlePasswordVisibility}>
                                 <Text style={styles.toogleBtnTitle}>{variable}</Text>
                             </TouchableOpacity>
                         </View>
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
                 <View style={styles.container}>
-                    <TouchableOpacity style={styles.btn} activeOpacity={0.5} onPress={submit}>
+                    <TouchableOpacity style={styles.btn} disabled={!state.password || !state.email || !state.name} activeOpacity={0.5} onPress={submit}>
                         <Text style={styles.btnTitle}>Зарегистрироваться</Text>
                     </TouchableOpacity>
                     <View style={styles.textContainer}>
@@ -130,8 +147,9 @@ const styles = StyleSheet.create({
     title: {
         marginTop: 92,
         marginBottom: 33,
+        color:'#212121',
         fontSize: 30,
-        fontWeight:'500',
+        fontFamily:'Roboto-Medium'
     },
     input: {
         height: 50,
@@ -143,6 +161,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F6F6F6",
         color: "#212121",
         fontSize: 16,
+        fontFamily: 'Roboto-Regular',
     },
     toogleBtn: {
         position: 'absolute',
@@ -151,8 +170,9 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     toogleBtnTitle: {
+        color: "#1B4371",
         fontSize: 16,
-        color: "#1B4371",   
+        fontFamily: 'Roboto-Regular',           
     },
     btn: {
         height: 50,
@@ -163,13 +183,14 @@ const styles = StyleSheet.create({
         backgroundColor:"#FF6C00",
     },
     btnTitle: {
+        color:"#FFFFFF",
         fontSize: 16,
-        color:"#FFFFFF"
-        
+        fontFamily: 'Roboto-Regular',        
     },
     link: {
         color: "#1B4371",
-        fontSize:16,
+        fontSize: 16,
+        fontFamily: 'Roboto-Regular',
     }
     
 })
