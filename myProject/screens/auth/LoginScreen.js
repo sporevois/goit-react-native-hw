@@ -1,6 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { AntDesign } from '@expo/vector-icons';
-import useTogglePassVisibility from "../hooks/useTogglePassVisibility";
+import React, { useState } from "react";
+import useTogglePassVisibility from "../../hooks/useTogglePassVisibility";
 import {
     StyleSheet,
     Text,
@@ -12,65 +11,32 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     Keyboard,
+    Pressable,
 } from 'react-native'
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
 
 const initialState = {
-        name: '',
         email: '',
         password: ''
 }
 
-SplashScreen.preventAutoHideAsync();
-    
-const RegistrationScreen = () => {
-    
+const LoginScreen = () => {
+
     const [state, setState] = useState(initialState);
-    const [fontsLoaded] = useFonts({
-        'Roboto-Regular': require("../assets/fonts/Roboto-Regular.ttf"),
-        'Roboto-Medium': require("../assets/fonts/Roboto-Medium.ttf"),
-    });
-    const { passwordVisibility, variable, handlePasswordVisibility } = useTogglePassVisibility();    
+    const { passwordVisibility, variable, handlePasswordVisibility } = useTogglePassVisibility(); 
 
     const submit = () => {
-        console.log(state);
+        console.log({email: state.email, password: state.password});
         setState(initialState);
     }
 
-    const onLayoutRootView = useCallback(async () => {
-        if (fontsLoaded) {
-            await SplashScreen.hideAsync();
-        }
-    }, [fontsLoaded]);
-
-    if (!fontsLoaded) {
-        return null;
-    };
-
     return (
-        <TouchableWithoutFeedback onLayout={onLayoutRootView} onPress={Keyboard.dismiss}>
-            <ImageBackground style={styles.image} source={require('../assets/images/PhotoBG.jpg')}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ImageBackground style={styles.image} source={require('../../assets/images/PhotoBG.jpg')}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <KeyboardAvoidingView style={styles.form} behavior={Platform.OS == "ios" ? "padding" : "height"}>
-                        <View style={styles.avatarContainer}>
-                            <View style={styles.avatar}>
-                                {/* Avatar upload */}
-                            </View>
-                            <TouchableOpacity style={styles.addAvatarBtn}>
-                                <AntDesign name="pluscircleo" size={25} color="#FF6C00" />
-                            </TouchableOpacity>
-                        </View>
                         <View style={styles.textContainer}>
-                            <Text style={styles.title}>Регистрация</Text>
+                            <Text style={styles.title}>Войти</Text>
                         </View>                        
-                        <TextInput
-                            name="name"
-                            value={state.name}
-                            placeholder="Логин"
-                            style={styles.input}
-                            onChangeText={(value)=>setState(prev =>({...prev, name:value}))}
-                        />
                         <TextInput
                             name="email"
                             value={state.email}
@@ -94,16 +60,16 @@ const RegistrationScreen = () => {
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
                 <View style={styles.container}>
-                    <TouchableOpacity style={styles.btn} disabled={!state.password || !state.email || !state.name} activeOpacity={0.5} onPress={submit}>
-                        <Text style={styles.btnTitle}>Зарегистрироваться</Text>
+                    <TouchableOpacity style={styles.btn} disabled={!state.password || !state.email} activeOpacity={0.5} onPress={submit}>
+                        <Text style={styles.btnTitle}>Войти</Text>
                     </TouchableOpacity>
                     <View style={styles.textContainer}>
-                        <Text style={styles.link}>Уже есть аккаунт? Войти</Text>
+                        <Text style={styles.link}>Нет аккаунта? Зарегистрироваться</Text>
                     </View>
                 </View>            
             </ImageBackground>
-        </TouchableWithoutFeedback>
-    )    
+        </TouchableWithoutFeedback>        
+    )
 }
 
 const styles = StyleSheet.create({
@@ -120,36 +86,18 @@ const styles = StyleSheet.create({
     },
     container: {
         paddingHorizontal: 16,
-        paddingBottom:78,
+        paddingBottom:144,
         backgroundColor:'#FFFFFF',
-    },
-    avatarContainer: {
-        position: 'absolute',
-        top: -60,
-        width: 120,
-        height: 120,
-        marginBottom: 32,
-        alignSelf: 'center',
-        borderRadius: 16,
-        backgroundColor: "#F6F6F6"
-    },
-    addAvatarBtn: {
-        position: "absolute",
-        right: -12,
-        bottom:14,
-        borderRadius:50,
-        backgroundColor:'#FFFFFF',
-        
     },
     textContainer: {
         alignItems:"center"
     },
     title: {
-        marginTop: 92,
+        marginTop: 32,
         marginBottom: 33,
         color:'#212121',
         fontSize: 30,
-        fontFamily:'Roboto-Medium'
+        fontFamily: 'Roboto-Medium',
     },
     input: {
         height: 50,
@@ -171,8 +119,8 @@ const styles = StyleSheet.create({
     },
     toogleBtnTitle: {
         color: "#1B4371",
-        fontSize: 16,
-        fontFamily: 'Roboto-Regular',           
+        fontSize: 16,        
+        fontFamily: 'Roboto-Regular',
     },
     btn: {
         height: 50,
@@ -183,9 +131,10 @@ const styles = StyleSheet.create({
         backgroundColor:"#FF6C00",
     },
     btnTitle: {
-        color:"#FFFFFF",
+        color: "#FFFFFF",
         fontSize: 16,
-        fontFamily: 'Roboto-Regular',        
+        fontFamily: 'Roboto-Regular',
+        
     },
     link: {
         color: "#1B4371",
@@ -195,7 +144,4 @@ const styles = StyleSheet.create({
     
 })
 
-export default RegistrationScreen;
-
-
-
+export default LoginScreen;
