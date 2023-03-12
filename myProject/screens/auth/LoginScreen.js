@@ -19,7 +19,7 @@ const initialState = {
         password: ''
 }
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
 
     const [state, setState] = useState(initialState);
     const { passwordVisibility, variable, handlePasswordVisibility } = useTogglePassVisibility(); 
@@ -27,6 +27,7 @@ const LoginScreen = () => {
     const submit = () => {
         console.log({email: state.email, password: state.password});
         setState(initialState);
+        navigation.navigate('Home');
     }
 
     return (
@@ -63,9 +64,9 @@ const LoginScreen = () => {
                     <TouchableOpacity style={styles.btn} disabled={!state.password || !state.email} activeOpacity={0.5} onPress={submit}>
                         <Text style={styles.btnTitle}>Войти</Text>
                     </TouchableOpacity>
-                    <View style={styles.textContainer}>
-                        <Text style={styles.link}>Нет аккаунта? Зарегистрироваться</Text>
-                    </View>
+                    <TouchableOpacity onPress={()=>navigation.navigate('Register')}>
+                        <Text style={styles.link} >Нет аккаунта? Зарегистрироваться</Text>
+                    </TouchableOpacity >
                 </View>            
             </ImageBackground>
         </TouchableWithoutFeedback>        
@@ -86,7 +87,8 @@ const styles = StyleSheet.create({
     },
     container: {
         paddingHorizontal: 16,
-        paddingBottom:144,
+        paddingBottom: 144,
+        alignItems: 'center',
         backgroundColor:'#FFFFFF',
     },
     textContainer: {
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
     },
     btn: {
+        width: "100%",
         height: 50,
         justifyContent: "center",
         alignItems: "center",
