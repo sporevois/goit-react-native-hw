@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginScreen from './screens/auth/LoginScreen';
-import RegistrationScreen from './screens/auth/RegistrationScreen';
-import { View, StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import LoginScreen from './screens/auth/LoginScreen';
+import RegistrationScreen from './screens/auth/RegistrationScreen';
 
 SplashScreen.preventAutoHideAsync();
 const AuthStack = createNativeStackNavigator();
@@ -26,21 +25,12 @@ export default function App() {
     return null;
   };
 
-  return (
-    <View onLayout={onLayoutRootView} style={styles.container}>
-      <NavigationContainer>
-        <AuthStack.Navigator>
-          <AuthStack.Screen options={{headerShown:false}} name='Login' component={LoginScreen} />
-          <AuthStack.Screen options={{headerShown:false}} name='Register' component={RegistrationScreen}/>
-
-        </AuthStack.Navigator>
-        </NavigationContainer>
-    </View>
+  return (    
+    <NavigationContainer onReady={onLayoutRootView}>
+      <AuthStack.Navigator>
+        <AuthStack.Screen options={{headerShown:false}} name='Login' component={LoginScreen} />
+        <AuthStack.Screen options={{headerShown:false}} name='Register' component={RegistrationScreen}/>
+      </AuthStack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
