@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { AntDesign } from '@expo/vector-icons';
-import useTogglePassVisibility from "../hooks/useTogglePassVisibility";
+import useTogglePassVisibility from "../../hooks/useTogglePassVisibility";
 import {
     StyleSheet,
     Text,
@@ -13,44 +13,27 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
 } from 'react-native'
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
 
 const initialState = {
         name: '',
         email: '',
         password: ''
 }
-
-SplashScreen.preventAutoHideAsync();
     
-const RegistrationScreen = () => {
+const RegistrationScreen = ({navigation}) => {
     
     const [state, setState] = useState(initialState);
-    const [fontsLoaded] = useFonts({
-        'Roboto-Regular': require("../assets/fonts/Roboto-Regular.ttf"),
-        'Roboto-Medium': require("../assets/fonts/Roboto-Medium.ttf"),
-    });
     const { passwordVisibility, variable, handlePasswordVisibility } = useTogglePassVisibility();    
 
     const submit = () => {
         console.log(state);
         setState(initialState);
+        navigation.navigate('Home');
     }
 
-    const onLayoutRootView = useCallback(async () => {
-        if (fontsLoaded) {
-            await SplashScreen.hideAsync();
-        }
-    }, [fontsLoaded]);
-
-    if (!fontsLoaded) {
-        return null;
-    };
-
     return (
-        <TouchableWithoutFeedback onLayout={onLayoutRootView} onPress={Keyboard.dismiss}>
-            <ImageBackground style={styles.image} source={require('../assets/images/PhotoBG.jpg')}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ImageBackground style={styles.image} source={require('../../assets/images/PhotoBG.jpg')}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <KeyboardAvoidingView style={styles.form} behavior={Platform.OS == "ios" ? "padding" : "height"}>
                         <View style={styles.avatarContainer}>
@@ -97,9 +80,9 @@ const RegistrationScreen = () => {
                     <TouchableOpacity style={styles.btn} disabled={!state.password || !state.email || !state.name} activeOpacity={0.5} onPress={submit}>
                         <Text style={styles.btnTitle}>Зарегистрироваться</Text>
                     </TouchableOpacity>
-                    <View style={styles.textContainer}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
                         <Text style={styles.link}>Уже есть аккаунт? Войти</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>            
             </ImageBackground>
         </TouchableWithoutFeedback>
@@ -120,7 +103,8 @@ const styles = StyleSheet.create({
     },
     container: {
         paddingHorizontal: 16,
-        paddingBottom:78,
+        paddingBottom: 78,
+        alignItems: 'center',
         backgroundColor:'#FFFFFF',
     },
     avatarContainer: {
@@ -175,6 +159,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',           
     },
     btn: {
+        width: "100%",
         height: 50,
         justifyContent: "center",
         alignItems: "center",
