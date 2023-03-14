@@ -9,21 +9,34 @@ import {
 } from 'react-native';
 import { FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
+import * as Location from 'expo-location';
 
 
 
-const CreatePostsScreen = () => { 
+const CreatePostsScreen = ({navigation}) => { 
     const [hasPermission, setHasPermission] = useState(null);
     const [cameraRef, setCameraRef] = useState(null);
     const [photo, setPhoto] = useState(null);
     const [name, setName] = useState('');
+    const [place, setPlace] = useState('');
     const [location, setLocation] = useState('');
-    
+    const [errorMsg, setErrorMsg] = useState(null);
+
   
     useEffect(() => {
         (async () => {
             const { status } = await Camera.requestCameraPermissionsAsync();
             setHasPermission(status === "granted");
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
         })();
     }, []);
 
@@ -38,8 +51,18 @@ const CreatePostsScreen = () => {
         if (cameraRef) {
             const { uri } = await cameraRef.takePictureAsync();
             setPhoto(uri);
-            console.log(photo)
         }
+    }
+
+    const submit = async () => {
+        const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced, });
+        const coords = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+        };
+        setLocation(coords);
+        console.log({ photo, coords, name, place });
+        navigation.navigate('Posts', {photo});
     }
 
     
@@ -71,17 +94,17 @@ const CreatePostsScreen = () => {
             />
             <View>
                 <TextInput
-                    name="location"
-                    value={location}
+                    name="place"
+                    value={place}
                     placeholder={"Местность..."}
                     placeholderTextColor="#BDBDBD"
                     style={{...styles.input, paddingLeft:28}}
-                    onChangeText={(value) => setLocation(value)}
+                    onChangeText={(value) => setPlace(value)}
                 />
                 <SimpleLineIcons style={{position:"absolute", top: 13}} name="location-pin" size={24} color="#BDBDBD" />
             </View>
             
-            <TouchableOpacity style={styles.btn} >
+            <TouchableOpacity style={styles.btn}  onPress={submit}>
                 <Text style={styles.btnTitle}>Опубликовать</Text>
             </TouchableOpacity>
         </View>

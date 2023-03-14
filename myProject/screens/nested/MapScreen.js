@@ -3,13 +3,14 @@ import {
     StyleSheet,
     Text,
     View,
-} from 'react-native'
+} from 'react-native';
+import MapView from 'react-native-maps';
 
 
 const MapScreen = () => {
     return (
         <View style={styles.container}>
-            <Text>MapScreen</Text>
+            <MapView style={styles.map}></MapView>
         </View>
         
     )
@@ -20,6 +21,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    map:{
+        flex:1,
     }
 })
 
