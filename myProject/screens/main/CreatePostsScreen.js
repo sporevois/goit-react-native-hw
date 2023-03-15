@@ -11,16 +11,18 @@ import { FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
 
-
+const initialState = {
+    photo: '',
+    title: '',
+    place: '',
+    location: '',
+}
 
 const CreatePostsScreen = ({navigation}) => { 
     const [hasPermission, setHasPermission] = useState(null);
     const [cameraRef, setCameraRef] = useState(null);
-    const [photo, setPhoto] = useState(null);
-    const [name, setName] = useState('');
-    const [place, setPlace] = useState('');
-    const [location, setLocation] = useState('');
     const [errorMsg, setErrorMsg] = useState(null);
+    const [state, setState] = useState(initialState)
 
   
     useEffect(() => {
@@ -50,28 +52,24 @@ const CreatePostsScreen = ({navigation}) => {
     const takePhoto = async () => {
         if (cameraRef) {
             const { uri } = await cameraRef.takePictureAsync();
-            setPhoto(uri);
+            const {coords}= await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced, });
+            setState(prev => ({...prev, photo: uri, location: coords}));
         }
     }
 
-    const submit = async () => {
-        const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced, });
-        const coords = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-        };
-        setLocation(coords);
-        console.log({ photo, coords, name, place });
-        navigation.navigate('Posts', {photo});
+    const submit = async () => {       
+        console.log(state)        
+        navigation.navigate('Default', { state });
+        setState(initialState);
     }
 
     
     return (
         <View style={styles.container}>
-            {photo? (
+            {state.photo? (
                 <View style={styles.photoContainer}>
-                    <Image source={{ uri: photo }} style={{ height: 240 }} />
-                    <TouchableOpacity style={styles.cameraBtn} onPress={()=>setPhoto(null)}>
+                    <Image source={{ uri: state.photo }} style={{ height: 240 }} />
+                    <TouchableOpacity style={styles.cameraBtn} onPress={()=>setState(prev => ({...prev, photo: ''}))}>
                         <FontAwesome name="camera" size={24} color="#FFFFFF" />
                     </TouchableOpacity>  
                 </View>
@@ -85,21 +83,21 @@ const CreatePostsScreen = ({navigation}) => {
             )}
             <Text style={styles.text}>Загрузите фото</Text>
             <TextInput
-                name="name"
-                value={name}
+                name="title"
+                value={state.title}
                 placeholder="Название..."
                 placeholderTextColor="#BDBDBD"
                 style={styles.input}
-                onChangeText={(value) => setName(value)}
+                onChangeText={(value) => setState(prev =>({...prev, title: value}))}
             />
             <View>
                 <TextInput
                     name="place"
-                    value={place}
+                    value={state.place}
                     placeholder={"Местность..."}
                     placeholderTextColor="#BDBDBD"
                     style={{...styles.input, paddingLeft:28}}
-                    onChangeText={(value) => setPlace(value)}
+                    onChangeText={(value) => setState(prev =>({...prev, place: value}))}
                 />
                 <SimpleLineIcons style={{position:"absolute", top: 13}} name="location-pin" size={24} color="#BDBDBD" />
             </View>
